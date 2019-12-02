@@ -84,11 +84,7 @@ public class MethodRoadie {
     }
 
     public void runTest() {
-        runBeforesThenTestThenAfters(new Runnable() {
-            public void run() {
-                runTestMethod();
-            }
-        });
+        runBeforesThenTestThenAfters(()-> { runTestMethod();});
     }
 
     public void runBeforesThenTestThenAfters(Runnable test) {

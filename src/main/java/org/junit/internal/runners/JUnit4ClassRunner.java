@@ -47,11 +47,7 @@ public class JUnit4ClassRunner extends Runner implements Filterable, Sortable {
 
     @Override
     public void run(final RunNotifier notifier) {
-        new ClassRoadie(notifier, testClass, getDescription(), new Runnable() {
-            public void run() {
-                runMethods(notifier);
-            }
-        }).runProtected();
+        new ClassRoadie(notifier, testClass, getDescription(), ()-> { runMethods(notifier);}).runProtected();
     }
 
     protected void runMethods(final RunNotifier notifier) {

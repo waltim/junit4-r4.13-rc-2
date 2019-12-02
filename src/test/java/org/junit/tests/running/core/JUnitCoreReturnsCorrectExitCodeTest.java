@@ -37,11 +37,7 @@ public class JUnitCoreReturnsCorrectExitCodeTest {
     }
 
     private void runClass(final String className, int returnCode) {
-        Integer exitValue = new MainRunner().runWithCheckForSystemExit(new Runnable() {
-            public void run() {
-                JUnitCore.main(className);
-            }
-        });
+        Integer exitValue = new MainRunner().runWithCheckForSystemExit(()-> { JUnitCore.main(className);});
         assertEquals(Integer.valueOf(returnCode), exitValue);
     }
 }
