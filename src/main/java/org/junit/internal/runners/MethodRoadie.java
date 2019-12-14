@@ -55,10 +55,7 @@ public class MethodRoadie {
     }
 
     private void runWithTimeout(final long timeout) {
-        runBeforesThenTestThenAfters(new Runnable() {
-
-            public void run() {
-                ExecutorService service = Executors.newSingleThreadExecutor();
+        runBeforesThenTestThenAfters(()-> { ExecutorService service = Executors.newSingleThreadExecutor();
                 Callable<Object> callable = new Callable<Object>() {
                     public Object call() throws Exception {
                         runTestMethod();
@@ -78,17 +75,12 @@ public class MethodRoadie {
                     addFailure(new TestTimedOutException(timeout, TimeUnit.MILLISECONDS));
                 } catch (Exception e) {
                     addFailure(e);
-                }
-            }
-        });
+                }});
     }
 
     public void runTest() {
-        runBeforesThenTestThenAfters(new Runnable() {
-            public void run() {
-                runTestMethod();
-            }
-        });
+        runBeforesThenTestThenAfters(()-> { runTestMethod();
+            });
     }
 
     public void runBeforesThenTestThenAfters(Runnable test) {

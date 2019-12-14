@@ -47,11 +47,8 @@ public final class ConcurrentRunNotifierTest {
         final int numParallelTests = 4;
         ExecutorService pool = Executors.newFixedThreadPool(numParallelTests);
         for (int i = 0; i < numParallelTests; ++i) {
-            pool.submit(new Runnable() {
-                public void run() {
-                    fNotifier.fireTestStarted(null);
-                }
-            });
+            pool.submit(()-> { fNotifier.fireTestStarted(null);
+                });
         }
         pool.shutdown();
         assertTrue(pool.awaitTermination(TIMEOUT, TimeUnit.SECONDS));

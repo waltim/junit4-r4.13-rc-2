@@ -61,12 +61,7 @@ public class TestClass {
     }
 
     private boolean isShadowed(Method method, List<Method> results) {
-        for (Method each : results) {
-            if (isShadowed(method, each)) {
-                return true;
-            }
-        }
-        return false;
+        return results.stream().anyMatch(each -> isShadowed(method, each));
     }
 
     private boolean isShadowed(Method current, Method previous) {
