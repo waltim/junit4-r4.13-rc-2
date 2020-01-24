@@ -67,14 +67,14 @@ public class RunNotifier {
             int capacity = currentListeners.size();
             List<RunListener> safeListeners = new ArrayList<RunListener>(capacity);
             List<Failure> failures = new ArrayList<Failure>(capacity);
-            for (RunListener listener : currentListeners) {
+            currentListeners.forEach((listener) -> {
                 try {
                     notifyListener(listener);
                     safeListeners.add(listener);
                 } catch (Exception e) {
                     failures.add(new Failure(Description.TEST_MECHANISM, e));
                 }
-            }
+            });
             fireTestFailures(safeListeners, failures);
         }
 

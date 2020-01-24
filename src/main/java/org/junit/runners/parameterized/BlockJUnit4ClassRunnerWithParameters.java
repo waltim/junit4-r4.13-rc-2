@@ -117,19 +117,18 @@ public class BlockJUnit4ClassRunnerWithParameters extends
         if (getInjectionType() == InjectionType.FIELD) {
             List<FrameworkField> annotatedFieldsByParameter = getAnnotatedFieldsByParameter();
             int[] usedIndices = new int[annotatedFieldsByParameter.size()];
-            for (FrameworkField each : annotatedFieldsByParameter) {
-                int index = each.getField().getAnnotation(Parameter.class)
-                        .value();
-                if (index < 0 || index > annotatedFieldsByParameter.size() - 1) {
-                    errors.add(new Exception("Invalid @Parameter value: "
-                            + index + ". @Parameter fields counted: "
-                            + annotatedFieldsByParameter.size()
-                            + ". Please use an index between 0 and "
-                            + (annotatedFieldsByParameter.size() - 1) + "."));
-                } else {
-                    usedIndices[index]++;
-                }
-            }
+            annotatedFieldsByParameter.stream().map((each) -> each.getField().getAnnotation(Parameter.class)
+                    .value()).forEachOrdered((index) -> {
+                        if (index < 0 || index > annotatedFieldsByParameter.size() - 1) {
+                            errors.add(new Exception("Invalid @Parameter value: "
+                                    + index + ". @Parameter fields counted: "
+                                    + annotatedFieldsByParameter.size()
+                                    + ". Please use an index between 0 and "
+                                    + (annotatedFieldsByParameter.size() - 1) + "."));
+                        } else {
+                            usedIndices[index]++;
+                        }
+            });
             for (int index = 0; index < usedIndices.length; index++) {
                 int numberOfUse = usedIndices[index];
                 if (numberOfUse == 0) {

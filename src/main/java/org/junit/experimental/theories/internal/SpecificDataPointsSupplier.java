@@ -26,12 +26,12 @@ public class SpecificDataPointsSupplier extends AllMembersSupplier {
 
         List<Field> fieldsWithMatchingNames = new ArrayList<Field>();
         
-        for (Field field : fields) {
+        fields.forEach((field) -> {
             String[] fieldNames = field.getAnnotation(DataPoint.class).value();
             if (Arrays.asList(fieldNames).contains(requestedName)) {
                 fieldsWithMatchingNames.add(field);
             }
-        }
+        });
         
         return fieldsWithMatchingNames;
     }
@@ -43,12 +43,12 @@ public class SpecificDataPointsSupplier extends AllMembersSupplier {
         
         List<Field> fieldsWithMatchingNames = new ArrayList<Field>();
         
-        for (Field field : fields) {
+        fields.forEach((field) -> {
             String[] fieldNames = field.getAnnotation(DataPoints.class).value();
             if (Arrays.asList(fieldNames).contains(requestedName)) {
                 fieldsWithMatchingNames.add(field);
             }
-        }
+        });
         
         return fieldsWithMatchingNames;
     }
@@ -60,12 +60,12 @@ public class SpecificDataPointsSupplier extends AllMembersSupplier {
         
         List<FrameworkMethod> methodsWithMatchingNames = new ArrayList<FrameworkMethod>();
         
-        for (FrameworkMethod method : methods) {
+        methods.forEach((method) -> {
             String[] methodNames = method.getAnnotation(DataPoint.class).value();
             if (Arrays.asList(methodNames).contains(requestedName)) {
                 methodsWithMatchingNames.add(method);
             }
-        }
+        });
         
         return methodsWithMatchingNames;
     }
@@ -77,12 +77,12 @@ public class SpecificDataPointsSupplier extends AllMembersSupplier {
         
         List<FrameworkMethod> methodsWithMatchingNames = new ArrayList<FrameworkMethod>();
         
-        for (FrameworkMethod method : methods) {
+        methods.forEach((method) -> {
             String[] methodNames = method.getAnnotation(DataPoints.class).value();
             if (Arrays.asList(methodNames).contains(requestedName)) {
                 methodsWithMatchingNames.add(method);
             }
-        }
+        });
         
         return methodsWithMatchingNames;
     }

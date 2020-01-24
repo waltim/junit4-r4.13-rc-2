@@ -45,11 +45,9 @@ public final class CategoryValidator extends AnnotationValidator {
         List<Exception> errors = new ArrayList<Exception>();
         Annotation[] annotations = method.getAnnotations();
         for (Annotation annotation : annotations) {
-            for (Class<?> clazz : INCOMPATIBLE_ANNOTATIONS) {
-                if (annotation.annotationType().isAssignableFrom(clazz)) {
-                    addErrorMessage(errors, clazz);
-                }
-            }
+            INCOMPATIBLE_ANNOTATIONS.stream().filter((clazz) -> (annotation.annotationType().isAssignableFrom(clazz))).forEachOrdered((clazz) -> {
+                addErrorMessage(errors, clazz);
+            });
         }
         return unmodifiableList(errors);
     }

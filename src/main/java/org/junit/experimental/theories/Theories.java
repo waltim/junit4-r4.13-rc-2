@@ -124,21 +124,19 @@ public class Theories extends BlockJUnit4ClassRunner {
 
     @Override
     protected void validateTestMethods(List<Throwable> errors) {
-        for (FrameworkMethod each : computeTestMethods()) {
+        computeTestMethods().stream().map((each) -> {
             if (each.getAnnotation(Theory.class) != null) {
                 each.validatePublicVoid(false, errors);
                 each.validateNoTypeParametersOnArgs(errors);
             } else {
                 each.validatePublicVoidNoArg(false, errors);
             }
-            
-            for (ParameterSignature signature : ParameterSignature.signatures(each.getMethod())) {
-                ParametersSuppliedBy annotation = signature.findDeepAnnotation(ParametersSuppliedBy.class);
-                if (annotation != null) {
-                    validateParameterSupplier(annotation.value(), errors);
-                }
-            }
-        }
+            return each;
+        }).forEachOrdered((each) -> {
+            ParameterSignature.signatures(each.getMethod()).stream().map((signature) -> signature.findDeepAnnotation(ParametersSuppliedBy.class)).filter((annotation) -> (annotation != null)).forEachOrdered((annotation) -> {
+                validateParameterSupplier(annotation.value(), errors);
+            });
+        });
     }
 
     private void validateParameterSupplier(Class<? extends ParameterSupplier> supplierClass, List<Throwable> errors) {

@@ -207,10 +207,8 @@ public class Categories extends Suite {
                 return true;
             }
 
-            for (Description each : description.getChildren()) {
-                if (shouldRun(each)) {
-                    return true;
-                }
+            if (description.getChildren().stream().anyMatch((each) -> (shouldRun(each)))) {
+                return true;
             }
 
             return false;
@@ -253,10 +251,8 @@ public class Categories extends Suite {
          * If empty <tt>parentCategories</tt>, returns <tt>false</tt>.
          */
         private boolean matchesAnyParentCategories(Set<Class<?>> childCategories, Set<Class<?>> parentCategories) {
-            for (Class<?> parentCategory : parentCategories) {
-                if (hasAssignableTo(childCategories, parentCategory)) {
-                    return true;
-                }
+            if (parentCategories.stream().anyMatch((parentCategory) -> (hasAssignableTo(childCategories, parentCategory)))) {
+                return true;
             }
             return false;
         }
@@ -266,10 +262,8 @@ public class Categories extends Suite {
          * If empty <tt>parentCategories</tt>, returns <tt>true</tt>.
          */
         private boolean matchesAllParentCategories(Set<Class<?>> childCategories, Set<Class<?>> parentCategories) {
-            for (Class<?> parentCategory : parentCategories) {
-                if (!hasAssignableTo(childCategories, parentCategory)) {
-                    return false;
-                }
+            if (!parentCategories.stream().noneMatch((parentCategory) -> (!hasAssignableTo(childCategories, parentCategory)))) {
+                return false;
             }
             return true;
         }
@@ -340,10 +334,8 @@ public class Categories extends Suite {
     }
 
     private static boolean hasAssignableTo(Set<Class<?>> assigns, Class<?> to) {
-        for (final Class<?> from : assigns) {
-            if (to.isAssignableFrom(from)) {
-                return true;
-            }
+        if (assigns.stream().anyMatch((from) -> (to.isAssignableFrom(from)))) {
+            return true;
         }
         return false;
     }

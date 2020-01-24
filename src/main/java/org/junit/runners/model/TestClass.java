@@ -61,16 +61,18 @@ public class TestClass implements Annotatable {
     }
 
     protected void scanAnnotatedMembers(Map<Class<? extends Annotation>, List<FrameworkMethod>> methodsForAnnotations, Map<Class<? extends Annotation>, List<FrameworkField>> fieldsForAnnotations) {
-        for (Class<?> eachClass : getSuperClasses(clazz)) {
+        getSuperClasses(clazz).stream().map((eachClass) -> {
             for (Method eachMethod : MethodSorter.getDeclaredMethods(eachClass)) {
                 addToAnnotationLists(new FrameworkMethod(eachMethod), methodsForAnnotations);
             }
+            return eachClass;
+        }).forEachOrdered((eachClass) -> {
             // ensuring fields are sorted to make sure that entries are inserted
             // and read from fieldForAnnotations in a deterministic order
             for (Field eachField : getSortedDeclaredFields(eachClass)) {
                 addToAnnotationLists(new FrameworkField(eachField), fieldsForAnnotations);
             }
-        }
+        });
     }
 
     private static Field[] getSortedDeclaredFields(Class<?> clazz) {
@@ -100,9 +102,9 @@ public class TestClass implements Annotatable {
             makeDeeplyUnmodifiable(Map<Class<? extends Annotation>, List<T>> source) {
         Map<Class<? extends Annotation>, List<T>> copy =
                 new LinkedHashMap<Class<? extends Annotation>, List<T>>();
-        for (Map.Entry<Class<? extends Annotation>, List<T>> entry : source.entrySet()) {
+        source.entrySet().forEach((entry) -> {
             copy.put(entry.getKey(), Collections.unmodifiableList(entry.getValue()));
-        }
+        });
         return Collections.unmodifiableMap(copy);
     }
 
@@ -148,9 +150,9 @@ public class TestClass implements Annotatable {
 
     private <T> List<T> collectValues(Map<?, List<T>> map) {
         Set<T> values = new LinkedHashSet<T>();
-        for (List<T> additionalValues : map.values()) {
+        map.values().forEach((additionalValues) -> {
             values.addAll(additionalValues);
-        }
+        });
         return new ArrayList<T>(values);
     }
 
@@ -226,12 +228,9 @@ public class TestClass implements Annotatable {
     public <T> List<T> getAnnotatedFieldValues(Object test,
             Class<? extends Annotation> annotationClass, Class<T> valueClass) {
         final List<T> results = new ArrayList<T>();
-        collectAnnotatedFieldValues(test, annotationClass, valueClass,
-                new MemberValueConsumer<T>() {
-                    public void accept(FrameworkMember<?> member, T value) {
-                        results.add(value);
-                    }
-                });
+        collectAnnotatedFieldValues(test, annotationClass, valueClass, (FrameworkMember<?> member, T value) -> {
+            results.add(value);
+        });
         return results;
     }
 
@@ -244,7 +243,7 @@ public class TestClass implements Annotatable {
     public <T> void collectAnnotatedFieldValues(Object test,
             Class<? extends Annotation> annotationClass, Class<T> valueClass,
             MemberValueConsumer<T> consumer) {
-        for (FrameworkField each : getAnnotatedFields(annotationClass)) {
+        getAnnotatedFields(annotationClass).forEach((each) -> {
             try {
                 Object fieldValue = each.get(test);
                 if (valueClass.isInstance(fieldValue)) {
@@ -254,18 +253,15 @@ public class TestClass implements Annotatable {
                 throw new RuntimeException(
                         "How did getFields return a field we couldn't access?", e);
             }
-        }
+        });
     }
 
     public <T> List<T> getAnnotatedMethodValues(Object test,
             Class<? extends Annotation> annotationClass, Class<T> valueClass) {
         final List<T> results = new ArrayList<T>();
-        collectAnnotatedMethodValues(test, annotationClass, valueClass,
-                new MemberValueConsumer<T>() {
-                    public void accept(FrameworkMember<?> member, T value) {
-                        results.add(value);
-                    }
-                });
+        collectAnnotatedMethodValues(test, annotationClass, valueClass, (FrameworkMember<?> member, T value) -> {
+            results.add(value);
+        });
         return results;
     }
 
@@ -278,16 +274,16 @@ public class TestClass implements Annotatable {
     public <T> void collectAnnotatedMethodValues(Object test,
             Class<? extends Annotation> annotationClass, Class<T> valueClass,
             MemberValueConsumer<T> consumer) {
-        for (FrameworkMethod each : getAnnotatedMethods(annotationClass)) {
+        getAnnotatedMethods(annotationClass).forEach((each) -> {
             try {
                 /*
-                 * A method annotated with @Rule may return a @TestRule or a @MethodRule,
-                 * we cannot call the method to check whether the return type matches our
-                 * expectation i.e. subclass of valueClass. If we do that then the method 
-                 * will be invoked twice and we do not want to do that. So we first check
-                 * whether return type matches our expectation and only then call the method
-                 * to fetch the MethodRule
-                 */
+                * A method annotated with @Rule may return a @TestRule or a @MethodRule,
+                * we cannot call the method to check whether the return type matches our
+                * expectation i.e. subclass of valueClass. If we do that then the method
+                * will be invoked twice and we do not want to do that. So we first check
+                * whether return type matches our expectation and only then call the method
+                * to fetch the MethodRule
+                */
                 if (valueClass.isAssignableFrom(each.getReturnType())) {
                     Object fieldValue = each.invokeExplosively(test);
                     consumer.accept(each, valueClass.cast(fieldValue));
@@ -296,7 +292,7 @@ public class TestClass implements Annotatable {
                 throw new RuntimeException(
                         "Exception in " + each.getName(), e);
             }
-        }
+        });
     }
 
     public boolean isPublic() {

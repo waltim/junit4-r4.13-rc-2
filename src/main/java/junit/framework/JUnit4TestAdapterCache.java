@@ -34,9 +34,9 @@ public class JUnit4TestAdapterCache extends HashMap<Description, Test> {
             return new JUnit4TestCaseFacade(description);
         } else {
             TestSuite suite = new TestSuite(description.getDisplayName());
-            for (Description child : description.getChildren()) {
+            description.getChildren().forEach((child) -> {
                 suite.addTest(asTest(child));
-            }
+            });
             return suite;
         }
     }
@@ -67,9 +67,9 @@ public class JUnit4TestAdapterCache extends HashMap<Description, Test> {
             return Arrays.asList(asTest(description));
         } else {
             List<Test> returnThis = new ArrayList<Test>();
-            for (Description child : description.getChildren()) {
+            description.getChildren().forEach((child) -> {
                 returnThis.add(asTest(child));
-            }
+            });
             return returnThis;
         }
     }

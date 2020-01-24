@@ -223,9 +223,7 @@ public class Description implements Serializable {
             return 1;
         }
         int result = 0;
-        for (Description child : fChildren) {
-            result += child.testCount();
-        }
+        result = fChildren.stream().map((child) -> child.testCount()).reduce(result, Integer::sum);
         return result;
     }
 

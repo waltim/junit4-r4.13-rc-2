@@ -55,12 +55,12 @@ class RuleContainer {
     private List<RuleEntry> getSortedEntries() {
         List<RuleEntry> ruleEntries = new ArrayList<RuleEntry>(
                 methodRules.size() + testRules.size());
-        for (MethodRule rule : methodRules) {
+        methodRules.forEach((rule) -> {
             ruleEntries.add(new RuleEntry(rule, RuleEntry.TYPE_METHOD_RULE, orderValues.get(rule)));
-        }
-        for (TestRule rule : testRules) {
+        });
+        testRules.forEach((rule) -> {
             ruleEntries.add(new RuleEntry(rule, RuleEntry.TYPE_TEST_RULE, orderValues.get(rule)));
-        }
+        });
         Collections.sort(ruleEntries, ENTRY_COMPARATOR);
         return ruleEntries;
     }
@@ -90,9 +90,9 @@ class RuleContainer {
      */
     List<Object> getSortedRules() {
         List<Object> result = new ArrayList<Object>();
-        for (RuleEntry entry : getSortedEntries()) {
+        getSortedEntries().forEach((entry) -> {
             result.add(entry.rule);
-        }
+        });
         return result;
     }
 

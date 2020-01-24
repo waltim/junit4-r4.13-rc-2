@@ -55,40 +55,31 @@ public class MethodRoadie {
     }
 
     private void runWithTimeout(final long timeout) {
-        runBeforesThenTestThenAfters(new Runnable() {
-
-            public void run() {
-                ExecutorService service = Executors.newSingleThreadExecutor();
-                Callable<Object> callable = new Callable<Object>() {
-                    public Object call() throws Exception {
-                        runTestMethod();
-                        return null;
-                    }
-                };
-                Future<Object> result = service.submit(callable);
-                service.shutdown();
-                try {
-                    boolean terminated = service.awaitTermination(timeout,
-                            TimeUnit.MILLISECONDS);
-                    if (!terminated) {
-                        service.shutdownNow();
-                    }
-                    result.get(0, TimeUnit.MILLISECONDS); // throws the exception if one occurred during the invocation
-                } catch (TimeoutException e) {
-                    addFailure(new TestTimedOutException(timeout, TimeUnit.MILLISECONDS));
-                } catch (Exception e) {
-                    addFailure(e);
+        runBeforesThenTestThenAfters(() -> {
+            ExecutorService service = Executors.newSingleThreadExecutor();
+            Callable<Object> callable = () -> {
+                runTestMethod();
+                return null;
+            };
+            Future<Object> result = service.submit(callable);
+            service.shutdown();
+            try {
+                boolean terminated = service.awaitTermination(timeout,
+                        TimeUnit.MILLISECONDS);
+                if (!terminated) {
+                    service.shutdownNow();
                 }
+                result.get(0, TimeUnit.MILLISECONDS); // throws the exception if one occurred during the invocation
+            } catch (TimeoutException e) {
+                addFailure(new TestTimedOutException(timeout, TimeUnit.MILLISECONDS));
+            } catch (Exception e) {
+                addFailure(e);
             }
         });
     }
 
     public void runTest() {
-        runBeforesThenTestThenAfters(new Runnable() {
-            public void run() {
-                runTestMethod();
-            }
-        });
+        runBeforesThenTestThenAfters(this::runTestMethod);
     }
 
     public void runBeforesThenTestThenAfters(Runnable test) {
@@ -145,7 +136,7 @@ public class MethodRoadie {
 
     private void runAfters() {
         List<Method> afters = testMethod.getAfters();
-        for (Method after : afters) {
+        afters.forEach((after) -> {
             try {
                 after.invoke(test);
             } catch (InvocationTargetException e) {
@@ -153,7 +144,7 @@ public class MethodRoadie {
             } catch (Throwable e) {
                 addFailure(e); // Untested, but seems impossible
             }
-        }
+        });
     }
 
     protected void addFailure(Throwable e) {

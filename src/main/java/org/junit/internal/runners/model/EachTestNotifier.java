@@ -25,9 +25,9 @@ public class EachTestNotifier {
     }
 
     private void addMultipleFailureException(MultipleFailureException mfe) {
-        for (Throwable each : mfe.getFailures()) {
+        mfe.getFailures().forEach((each) -> {
             addFailure(each);
-        }
+        });
     }
 
     public void addFailedAssumption(AssumptionViolatedException e) {

@@ -89,15 +89,15 @@ public class RuleMemberValidator {
         List<? extends FrameworkMember<?>> members = methods ? target.getAnnotatedMethods(annotation)
                 : target.getAnnotatedFields(annotation);
 
-        for (FrameworkMember<?> each : members) {
+        members.forEach((each) -> {
             validateMember(each, errors);
-        }
+        });
     }
 
     private void validateMember(FrameworkMember<?> member, List<Throwable> errors) {
-        for (RuleValidator strategy : validatorStrategies) {
+        validatorStrategies.forEach((strategy) -> {
             strategy.validate(member, annotation, errors);
-        }
+        });
     }
 
     private static Builder classRuleValidatorBuilder() {

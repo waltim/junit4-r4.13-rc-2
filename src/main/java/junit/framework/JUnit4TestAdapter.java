@@ -70,12 +70,9 @@ public class JUnit4TestAdapter implements Test, Filterable, Orderable, Describab
             return Description.EMPTY;
         }
         Description result = description.childlessCopy();
-        for (Description each : description.getChildren()) {
-            Description child = removeIgnored(each);
-            if (!child.isEmpty()) {
-                result.addChild(child);
-            }
-        }
+        description.getChildren().stream().map((each) -> removeIgnored(each)).filter((child) -> (!child.isEmpty())).forEachOrdered((child) -> {
+            result.addChild(child);
+        });
         return result;
     }
 

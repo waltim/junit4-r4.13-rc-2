@@ -53,10 +53,8 @@ public abstract class Filter {
                 }
 
                 // explicitly check if any children want to run
-                for (Description each : description.getChildren()) {
-                    if (shouldRun(each)) {
-                        return true;
-                    }
+                if (description.getChildren().stream().anyMatch((each) -> (shouldRun(each)))) {
+                    return true;
                 }
                 return false;
             }

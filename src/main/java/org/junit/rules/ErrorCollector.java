@@ -72,11 +72,9 @@ public class ErrorCollector extends Verifier {
      * Execution continues, but the test will fail at the end if the match fails.
      */
     public <T> void checkThat(final String reason, final T value, final Matcher<T> matcher) {
-        checkSucceeds(new Callable<Object>() {
-            public Object call() throws Exception {
-                assertThat(reason, value, matcher);
-                return value;
-            }
+        checkSucceeds(() -> {
+            assertThat(reason, value, matcher);
+            return value;
         });
     }
 

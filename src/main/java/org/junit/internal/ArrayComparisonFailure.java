@@ -54,11 +54,13 @@ public class ArrayComparisonFailure extends AssertionError {
             sb.append(fMessage);
         }
         sb.append("arrays first differed at element ");
-        for (int each : fIndices) {
+        fIndices.stream().map((each) -> {
             sb.append("[");
             sb.append(each);
+            return each;
+        }).forEachOrdered((_item) -> {
             sb.append("]");
-        }
+        });
         sb.append("; ");
         sb.append(getCause().getMessage());
         return sb.toString();

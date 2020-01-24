@@ -41,15 +41,14 @@ public class TestClass {
 
     public List<Method> getAnnotatedMethods(Class<? extends Annotation> annotationClass) {
         List<Method> results = new ArrayList<Method>();
-        for (Class<?> eachClass : getSuperClasses(klass)) {
-            Method[] methods = MethodSorter.getDeclaredMethods(eachClass);
+        getSuperClasses(klass).stream().map((eachClass) -> MethodSorter.getDeclaredMethods(eachClass)).forEachOrdered((methods) -> {
             for (Method eachMethod : methods) {
                 Annotation annotation = eachMethod.getAnnotation(annotationClass);
                 if (annotation != null && !isShadowed(eachMethod, results)) {
                     results.add(eachMethod);
                 }
             }
-        }
+        });
         if (runsTopToBottom(annotationClass)) {
             Collections.reverse(results);
         }
@@ -61,10 +60,8 @@ public class TestClass {
     }
 
     private boolean isShadowed(Method method, List<Method> results) {
-        for (Method each : results) {
-            if (isShadowed(method, each)) {
-                return true;
-            }
+        if (results.stream().anyMatch((each) -> (isShadowed(method, each)))) {
+            return true;
         }
         return false;
     }

@@ -28,13 +28,13 @@ public class RunAfters extends Statement {
         } catch (Throwable e) {
             errors.add(e);
         } finally {
-            for (FrameworkMethod each : afters) {
+            afters.forEach((each) -> {
                 try {
                     invokeMethod(each);
                 } catch (Throwable e) {
                     errors.add(e);
                 }
-            }
+            });
         }
         MultipleFailureException.assertEmpty(errors);
     }

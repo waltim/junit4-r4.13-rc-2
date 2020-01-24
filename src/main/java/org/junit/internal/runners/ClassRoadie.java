@@ -68,7 +68,7 @@ public class ClassRoadie {
 
     private void runAfters() {
         List<Method> afters = testClass.getAfters();
-        for (Method after : afters) {
+        afters.forEach((after) -> {
             try {
                 after.invoke(null);
             } catch (InvocationTargetException e) {
@@ -76,6 +76,6 @@ public class ClassRoadie {
             } catch (Throwable e) {
                 addFailure(e); // Untested, but seems impossible
             }
-        }
+        });
     }
 }

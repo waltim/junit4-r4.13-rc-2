@@ -95,28 +95,25 @@ public class AllMembersSupplier extends ParameterSupplier {
     }
 
     private void addSinglePointMethods(ParameterSignature sig, List<PotentialAssignment> list) {
-        for (FrameworkMethod dataPointMethod : getSingleDataPointMethods(sig)) {
-            if (sig.canAcceptType(dataPointMethod.getType())) {
-                list.add(new MethodParameterValue(dataPointMethod));
-            }
-        }
+        getSingleDataPointMethods(sig).stream().filter((dataPointMethod) -> (sig.canAcceptType(dataPointMethod.getType()))).forEachOrdered((dataPointMethod) -> {
+            list.add(new MethodParameterValue(dataPointMethod));
+        });
     }
     
     private void addMultiPointFields(ParameterSignature sig, List<PotentialAssignment> list) {
-        for (final Field field : getDataPointsFields(sig)) {
+        getDataPointsFields(sig).forEach((field) -> {
             Class<?> type = field.getType();
             addDataPointsValues(type, sig, field.getName(), list, getStaticFieldValue(field));
-        }
+        });
     }
 
     private void addSinglePointFields(ParameterSignature sig, List<PotentialAssignment> list) {
-        for (final Field field : getSingleDataPointFields(sig)) {
+        getSingleDataPointFields(sig).forEach((field) -> {
             Object value = getStaticFieldValue(field);
-            
             if (sig.canAcceptValue(value)) {
                 list.add(PotentialAssignment.forValue(field.getName(), value));
             }
-        }
+        });
     }
     
     private void addDataPointsValues(Class<?> type, ParameterSignature sig, String name, 
@@ -179,9 +176,9 @@ public class AllMembersSupplier extends ParameterSupplier {
         List<FrameworkField> fields = clazz.getAnnotatedFields(DataPoint.class);
         Collection<Field> validFields = new ArrayList<Field>();
 
-        for (FrameworkField frameworkField : fields) {
+        fields.forEach((frameworkField) -> {
             validFields.add(frameworkField.getField());
-        }
+        });
 
         return validFields;
     }
@@ -190,9 +187,9 @@ public class AllMembersSupplier extends ParameterSupplier {
         List<FrameworkField> fields = clazz.getAnnotatedFields(DataPoints.class);
         Collection<Field> validFields = new ArrayList<Field>();
 
-        for (FrameworkField frameworkField : fields) {
+        fields.forEach((frameworkField) -> {
             validFields.add(frameworkField.getField());
-        }
+        });
 
         return validFields;
     }

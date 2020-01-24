@@ -162,9 +162,9 @@ public final class Throwables {
 
     private static void appendStackTraceLines(
             List<String> stackTraceLines, StringBuilder destBuilder) {
-        for (String stackTraceLine : stackTraceLines) {
+        stackTraceLines.forEach((stackTraceLine) -> {
             destBuilder.append(String.format("%s%n", stackTraceLine));
-        }
+        });
     }
 
     private static <T> List<T> asReversedList(final List<T> list) {

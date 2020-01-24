@@ -210,9 +210,7 @@ public class TestSuite implements Test {
      */
     public int countTestCases() {
         int count = 0;
-        for (Test each : fTests) {
-            count += each.countTestCases();
-        }
+        count = fTests.stream().map((each) -> each.countTestCases()).reduce(count, Integer::sum);
         return count;
     }
 

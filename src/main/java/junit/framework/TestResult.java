@@ -35,9 +35,9 @@ public class TestResult {
      */
     public synchronized void addError(Test test, Throwable e) {
         fErrors.add(new TestFailure(test, e));
-        for (TestListener each : cloneListeners()) {
+        cloneListeners().forEach((each) -> {
             each.addError(test, e);
-        }
+        });
     }
 
     /**
@@ -46,9 +46,9 @@ public class TestResult {
      */
     public synchronized void addFailure(Test test, AssertionFailedError e) {
         fFailures.add(new TestFailure(test, e));
-        for (TestListener each : cloneListeners()) {
+        cloneListeners().forEach((each) -> {
             each.addFailure(test, e);
-        }
+        });
     }
 
     /**
@@ -78,9 +78,9 @@ public class TestResult {
      * Informs the result that a test was completed.
      */
     public void endTest(Test test) {
-        for (TestListener each : cloneListeners()) {
+        cloneListeners().forEach((each) -> {
             each.endTest(test);
-        }
+        });
     }
 
     /**
@@ -117,11 +117,7 @@ public class TestResult {
      */
     protected void run(final TestCase test) {
         startTest(test);
-        Protectable p = new Protectable() {
-            public void protect() throws Throwable {
-                test.runBare();
-            }
-        };
+        Protectable p = test::runBare;
         runProtected(test, p);
 
         endTest(test);
@@ -164,9 +160,9 @@ public class TestResult {
         synchronized (this) {
             fRunTests += count;
         }
-        for (TestListener each : cloneListeners()) {
+        cloneListeners().forEach((each) -> {
             each.startTest(test);
-        }
+        });
     }
 
     /**

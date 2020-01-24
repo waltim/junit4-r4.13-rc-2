@@ -104,9 +104,9 @@ public class MaxCore {
 
     private Request constructLeafRequest(List<Description> leaves) {
         final List<Runner> runners = new ArrayList<Runner>();
-        for (Description each : leaves) {
+        leaves.forEach((each) -> {
             runners.add(buildRunner(each));
-        }
+        });
         return new Request() {
             @Override
             public Runner getRunner() {
@@ -173,9 +173,9 @@ public class MaxCore {
                 results.add(description);
             }
         } else {
-            for (Description each : description.getChildren()) {
+            description.getChildren().forEach((each) -> {
                 findLeaves(description, each, results);
-            }
+            });
         }
     }
 }

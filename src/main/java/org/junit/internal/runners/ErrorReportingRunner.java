@@ -37,17 +37,17 @@ public class ErrorReportingRunner extends Runner {
     @Override
     public Description getDescription() {
         Description description = Description.createSuiteDescription(classNames);
-        for (Throwable each : causes) {
+        causes.forEach((_item) -> {
             description.addChild(describeCause());
-        }
+        });
         return description;
     }
 
     @Override
     public void run(RunNotifier notifier) {
-        for (Throwable each : causes) {
+        causes.forEach((each) -> {
             runCause(each, notifier);
-        }
+        });
     }
 
     private String getClassNames(Class<?>... testClasses) {

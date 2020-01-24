@@ -31,12 +31,14 @@ public class MultipleFailureException extends Exception {
                     "List of Throwables must not be empty");
         }
         this.fErrors = new ArrayList<Throwable>(errors.size());
-        for (Throwable error : errors) {
+        errors.stream().map((error) -> {
             if (error instanceof AssumptionViolatedException) {
                 error = new TestCouldNotBeSkippedException((AssumptionViolatedException) error);
             }
+            return error;
+        }).forEachOrdered((error) -> {
             fErrors.add(error);
-        }
+        });
     }
 
     public List<Throwable> getFailures() {
@@ -47,31 +49,31 @@ public class MultipleFailureException extends Exception {
     public String getMessage() {
         StringBuilder sb = new StringBuilder(
                 String.format("There were %d errors:", fErrors.size()));
-        for (Throwable e : fErrors) {
+        fErrors.forEach((e) -> {
             sb.append(String.format("%n  %s(%s)", e.getClass().getName(), e.getMessage()));
-        }
+        });
         return sb.toString();
     }
 
     @Override
     public void printStackTrace() {
-        for (Throwable e: fErrors) {
+        fErrors.forEach((e) -> {
             e.printStackTrace();
-        }
+        });
     }
     
     @Override
     public void printStackTrace(PrintStream s) {
-        for (Throwable e: fErrors) {
+        fErrors.forEach((e) -> {
             e.printStackTrace(s);
-        }
+        });
     }
     
     @Override
     public void printStackTrace(PrintWriter s) {
-        for (Throwable e: fErrors) {
+        fErrors.forEach((e) -> {
             e.printStackTrace(s);
-        }
+        });
     }
     
     /**

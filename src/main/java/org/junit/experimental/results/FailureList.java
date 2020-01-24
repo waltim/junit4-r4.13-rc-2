@@ -16,13 +16,13 @@ class FailureList {
     public Result result() {
         Result result = new Result();
         RunListener listener = result.createListener();
-        for (Failure failure : failures) {
+        failures.forEach((failure) -> {
             try {
                 listener.testFailure(failure);
             } catch (Exception e) {
                 throw new RuntimeException("I can't believe this happened");
             }
-        }
+        });
         return result;
     }
 }

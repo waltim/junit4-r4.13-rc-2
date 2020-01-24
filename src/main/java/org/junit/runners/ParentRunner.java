@@ -153,9 +153,9 @@ public abstract class ParentRunner<T> extends Runner implements Filterable,
 
     private void applyValidators(List<Throwable> errors) {
         if (getTestClass().getJavaClass() != null) {
-            for (TestClassValidator each : VALIDATORS) {
+            VALIDATORS.forEach((each) -> {
                 errors.addAll(each.validateTestClass(getTestClass()));
-            }
+            });
         }
     }
 
@@ -174,9 +174,9 @@ public abstract class ParentRunner<T> extends Runner implements Filterable,
             boolean isStatic, List<Throwable> errors) {
         List<FrameworkMethod> methods = getTestClass().getAnnotatedMethods(annotation);
 
-        for (FrameworkMethod eachTestMethod : methods) {
+        methods.forEach((eachTestMethod) -> {
             eachTestMethod.validatePublicVoidNoArg(isStatic, errors);
-        }
+        });
     }
 
     private void validateClassRules(List<Throwable> errors) {
@@ -221,10 +221,8 @@ public abstract class ParentRunner<T> extends Runner implements Filterable,
     }
 
     private boolean areAllChildrenIgnored() {
-        for (T child : getFilteredChildren()) {
-            if (!isIgnored(child)) {
-                return false;
-            }
+        if (!getFilteredChildren().stream().noneMatch((child) -> (!isIgnored(child)))) {
+            return false;
         }
         return true;
     }
@@ -325,13 +323,11 @@ public abstract class ParentRunner<T> extends Runner implements Filterable,
     private void runChildren(final RunNotifier notifier) {
         final RunnerScheduler currentScheduler = scheduler;
         try {
-            for (final T each : getFilteredChildren()) {
-                currentScheduler.schedule(new Runnable() {
-                    public void run() {
-                        ParentRunner.this.runChild(each, notifier);
-                    }
+            getFilteredChildren().forEach((each) -> {
+                currentScheduler.schedule(() -> {
+                    ParentRunner.this.runChild(each, notifier);
                 });
-            }
+            });
         } finally {
             currentScheduler.finished();
         }
@@ -397,9 +393,9 @@ public abstract class ParentRunner<T> extends Runner implements Filterable,
             description = Description.createSuiteDescription(clazz, getRunnerAnnotations());
         }
 
-        for (T child : getFilteredChildren()) {
+        getFilteredChildren().forEach((child) -> {
             description.addChild(describeChild(child));
-        }
+        });
         return description;
     }
 
@@ -458,9 +454,9 @@ public abstract class ParentRunner<T> extends Runner implements Filterable,
 
         childrenLock.lock();
         try {
-            for (T each : getFilteredChildren()) {
+            getFilteredChildren().forEach((each) -> {
                 sorter.apply(each);
-            }
+            });
             List<T> sortedChildren = new ArrayList<T>(getFilteredChildren());
             Collections.sort(sortedChildren, comparator(sorter));
             filteredChildren = Collections.unmodifiableList(sortedChildren);
@@ -546,11 +542,7 @@ public abstract class ParentRunner<T> extends Runner implements Filterable,
     }
 
     private Comparator<? super T> comparator(final Sorter sorter) {
-        return new Comparator<T>() {
-            public int compare(T o1, T o2) {
-                return sorter.compare(describeChild(o1), describeChild(o2));
-            }
-        };
+        return (T o1, T o2) -> sorter.compare(describeChild(o1), describeChild(o2));
     }
 
     /**
@@ -573,9 +565,9 @@ public abstract class ParentRunner<T> extends Runner implements Filterable,
         public List<TestRule> getOrderedRules() {
             Collections.sort(entries, RuleContainer.ENTRY_COMPARATOR);
             List<TestRule> result = new ArrayList<TestRule>(entries.size());
-            for (RuleContainer.RuleEntry entry : entries) {
+            entries.forEach((entry) -> {
                 result.add((TestRule) entry.rule);
-            }
+            });
             return result;
         }
     }

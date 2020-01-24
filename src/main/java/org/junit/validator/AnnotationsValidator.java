@@ -32,11 +32,10 @@ public final class AnnotationsValidator implements TestClassValidator {
      */
     public List<Exception> validateTestClass(TestClass testClass) {
         List<Exception> validationErrors= new ArrayList<Exception>();
-        for (AnnotatableValidator<?> validator : VALIDATORS) {
-            List<Exception> additionalErrors= validator
-                    .validateTestClass(testClass);
-            validationErrors.addAll(additionalErrors);
-        }
+        VALIDATORS.stream().map((validator) -> validator
+                .validateTestClass(testClass)).forEachOrdered((additionalErrors) -> {
+                    validationErrors.addAll(additionalErrors);
+        });
         return validationErrors;
     }
 

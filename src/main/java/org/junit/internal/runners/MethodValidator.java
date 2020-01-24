@@ -70,28 +70,34 @@ public class MethodValidator {
             boolean isStatic) {
         List<Method> methods = testClass.getAnnotatedMethods(annotation);
 
-        for (Method each : methods) {
+        methods.stream().map((each) -> {
             if (Modifier.isStatic(each.getModifiers()) != isStatic) {
                 String state = isStatic ? "should" : "should not";
                 errors.add(new Exception("Method " + each.getName() + "() "
-						+ state + " be static"));
+                        + state + " be static"));
             }
+            return each;
+        }).map((each) -> {
             if (!Modifier.isPublic(each.getDeclaringClass().getModifiers())) {
                 errors.add(new Exception("Class " + each.getDeclaringClass().getName()
-						+ " should be public"));
+                        + " should be public"));
             }
+            return each;
+        }).map((each) -> {
             if (!Modifier.isPublic(each.getModifiers())) {
                 errors.add(new Exception("Method " + each.getName()
-						+ " should be public"));
+                        + " should be public"));
             }
+            return each;
+        }).map((each) -> {
             if (each.getReturnType() != Void.TYPE) {
                 errors.add(new Exception("Method " + each.getName()
-						+ "should have a return type of void"));
+                        + "should have a return type of void"));
             }
-            if (each.getParameterTypes().length != 0) {
-                errors.add(new Exception("Method " + each.getName()
-						+ " should have no parameters"));
-            }
-        }
+            return each;
+        }).filter((each) -> (each.getParameterTypes().length != 0)).forEachOrdered((each) -> {
+            errors.add(new Exception("Method " + each.getName()
+                    + " should have no parameters"));
+        });
     }
 }
