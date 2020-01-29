@@ -84,12 +84,7 @@ public class RuleMemberValidatorTest {
     
     public static class TestWithClassRuleIsImplementationOfMethodRule {
         @ClassRule
-        public static MethodRule classRule = new MethodRule() {
-            
-            public Statement apply(Statement base, FrameworkMethod method, Object target) {
-                return base;
-            }
-        };
+        public static MethodRule classRule = (base, method, target) -> base;
     }
 
     /**
@@ -109,12 +104,7 @@ public class RuleMemberValidatorTest {
     public static class TestWithClassRuleMethodThatReturnsMethodRule {
         @ClassRule
         public static MethodRule methodRule() {
-            return new MethodRule() {
-                
-                public Statement apply(Statement base, FrameworkMethod method, Object target) {
-                    return base;
-                }
-            };
+            return (base, method, target) -> base;
         }
     }
     
@@ -203,12 +193,7 @@ public class RuleMemberValidatorTest {
 
     public static class TestWithMethodRule {
         @Rule
-        public MethodRule temporaryFolder = new MethodRule() {
-            public Statement apply(Statement base, FrameworkMethod method,
-                    Object target) {
-                return null;
-            }
-        };
+        public MethodRule temporaryFolder = (base, method, target) -> null;
     }
 
     @Test
@@ -316,12 +301,7 @@ public class RuleMemberValidatorTest {
     public static class MethodTestWithMethodRule {
         @Rule
         public MethodRule getTemporaryFolder() {
-            return new MethodRule() {
-                public Statement apply(Statement base, FrameworkMethod method,
-                        Object target) {
-                    return null;
-                }
-            };
+            return (base, method, target) -> null;
         }
     }
 

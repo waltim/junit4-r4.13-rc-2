@@ -194,10 +194,8 @@ public class ErrorCollectorTest {
 
         @Test
         public void example() {
-            collector.checkSucceeds(new Callable<Object>() {
-                public Object call() throws Exception {
-                    throw new RuntimeException("first!");
-                }
+            collector.checkSucceeds(() -> {
+                throw new RuntimeException("first!");
             });
         }
     }
@@ -208,15 +206,11 @@ public class ErrorCollectorTest {
 
         @Test
         public void example() {
-            collector.checkSucceeds(new Callable<Object>() {
-                public Object call() throws Exception {
-                    throw new RuntimeException("first!");
-                }
+            collector.checkSucceeds(() -> {
+                throw new RuntimeException("first!");
             });
-            collector.checkSucceeds(new Callable<Integer>() {
-                public Integer call() throws Exception {
-                    throw new RuntimeException("second!");
-                }
+            collector.checkSucceeds((Callable<Integer>) () -> {
+                throw new RuntimeException("second!");
             });
         }
     }
@@ -227,10 +221,8 @@ public class ErrorCollectorTest {
 
         @Test
         public void example() {
-            collector.checkSucceeds(new Callable<Object>() {
-                public Object call() throws Exception {
-                    throw new AssumptionViolatedException("message");
-                }
+            collector.checkSucceeds(() -> {
+                throw new AssumptionViolatedException("message");
             });
         }
     }
@@ -241,11 +233,9 @@ public class ErrorCollectorTest {
 
         @Test
         public void example() {
-            collector.checkSucceeds(new Callable<Object>() {
-                public Object call() throws Exception {
-                    assumeTrue(false);
-                    return null;
-                }
+            collector.checkSucceeds(() -> {
+                assumeTrue(false);
+                return null;
             });
         }
     }
@@ -256,11 +246,7 @@ public class ErrorCollectorTest {
 
         @Test
         public void example() {
-            Object result = collector.checkSucceeds(new Callable<Object>() {
-                public Object call() throws Exception {
-                    return 3;
-                }
-            });
+            Object result = collector.checkSucceeds((Callable<Object>) () -> 3);
             assertEquals(3, result);
         }
     }
@@ -271,10 +257,8 @@ public class ErrorCollectorTest {
 
         @Test
         public void example() {
-            collector.checkThrows(IllegalArgumentException.class, new ThrowingRunnable() {
-                public void run() throws Throwable {
-                    throw new IllegalArgumentException();
-                }
+            collector.checkThrows(IllegalArgumentException.class, () -> {
+                throw new IllegalArgumentException();
             });
         }
     }
@@ -285,10 +269,8 @@ public class ErrorCollectorTest {
 
         @Test
         public void example() {
-            collector.checkThrows(IllegalArgumentException.class, new ThrowingRunnable() {
-                public void run() throws Throwable {
-                    throw new NullPointerException();
-                }
+            collector.checkThrows(IllegalArgumentException.class, () -> {
+                throw new NullPointerException();
             });
         }
     }
@@ -299,9 +281,7 @@ public class ErrorCollectorTest {
 
         @Test
         public void example() {
-            collector.checkThrows(IllegalArgumentException.class, new ThrowingRunnable() {
-                public void run() throws Throwable {
-                }
+            collector.checkThrows(IllegalArgumentException.class, () -> {
             });
         }
     }

@@ -47,11 +47,7 @@ public final class ConcurrentRunNotifierTest {
         final int numParallelTests = 4;
         ExecutorService pool = Executors.newFixedThreadPool(numParallelTests);
         for (int i = 0; i < numParallelTests; ++i) {
-            pool.submit(new Runnable() {
-                public void run() {
-                    fNotifier.fireTestStarted(null);
-                }
-            });
+            pool.submit(() -> fNotifier.fireTestStarted(null));
         }
         pool.shutdown();
         assertTrue(pool.awaitTermination(TIMEOUT, TimeUnit.SECONDS));
@@ -106,16 +102,14 @@ public final class ConcurrentRunNotifierTest {
             final CountDownLatch latch = new CountDownLatch(10);
 
             ExecutorService notificationsPool = Executors.newFixedThreadPool(4);
-            notificationsPool.submit(new Callable<Void>() {
-                public Void call() throws Exception {
-                    trigger.await();
-                    while (condition.get()) {
-                        fNotifier.fireTestStarted(null);
-                        latch.countDown();
-                    }
+            notificationsPool.submit((Callable<Void>) () -> {
+                trigger.await();
+                while (condition.get()) {
                     fNotifier.fireTestStarted(null);
-                    return null;
+                    latch.countDown();
                 }
+                fNotifier.fireTestStarted(null);
+                return null;
             });
 
             // Wait for callable to start

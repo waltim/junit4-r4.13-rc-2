@@ -19,11 +19,7 @@ public class Sorter extends Ordering implements Comparator<Description> {
     /**
      * NULL is a <code>Sorter</code> that leaves elements in an undefined order
      */
-    public static final Sorter NULL = new Sorter(new Comparator<Description>() {
-        public int compare(Description o1, Description o2) {
-            return 0;
-        }
-    });
+    public static final Sorter NULL = new Sorter((o1, o2) -> 0);
 
     private final Comparator<Description> comparator;
 

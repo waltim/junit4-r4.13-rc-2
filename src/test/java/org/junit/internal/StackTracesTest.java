@@ -301,11 +301,9 @@ public class StackTracesTest {
     }
 
     private static Result runTest(final Class<?> testClass) {
-        Future<Result> future = executorService.submit(new Callable<Result>() {
-            public Result call() throws Exception {
-                JUnitCore core = new JUnitCore();
-                return core.run(testClass);
-            }
+        Future<Result> future = executorService.submit(() -> {
+            JUnitCore core = new JUnitCore();
+            return core.run(testClass);
         });
 
         try {

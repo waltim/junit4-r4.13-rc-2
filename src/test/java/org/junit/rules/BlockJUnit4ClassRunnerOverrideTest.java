@@ -71,11 +71,7 @@ public class BlockJUnit4ClassRunnerOverrideTest {
         protected List<TestRule> getTestRules(final Object test) {
             final LinkedList<TestRule> methodRules = new LinkedList<TestRule>(
                     super.getTestRules(test));
-            methodRules.add(new TestRule() {
-                public Statement apply(Statement base, Description description) {
-                    return new FlipBitRule().apply(base, null, test);
-                }
-            });
+            methodRules.add((base, description) -> new FlipBitRule().apply(base, null, test));
             return methodRules;
         }
     }

@@ -19,9 +19,5 @@ public final class Alphanumeric extends Sorter implements Ordering.Factory {
         return this;
     }
 
-    private static final Comparator<Description> COMPARATOR = new Comparator<Description>() {
-        public int compare(Description o1, Description o2) {
-            return o1.getDisplayName().compareTo(o2.getDisplayName());
-        }
-    };
+    private static final Comparator<Description> COMPARATOR = (o1, o2) -> o1.getDisplayName().compareTo(o2.getDisplayName());
 }

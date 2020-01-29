@@ -326,11 +326,7 @@ public abstract class ParentRunner<T> extends Runner implements Filterable,
         final RunnerScheduler currentScheduler = scheduler;
         try {
             for (final T each : getFilteredChildren()) {
-                currentScheduler.schedule(new Runnable() {
-                    public void run() {
-                        ParentRunner.this.runChild(each, notifier);
-                    }
-                });
+                currentScheduler.schedule(() -> ParentRunner.this.runChild(each, notifier));
             }
         } finally {
             currentScheduler.finished();
@@ -546,11 +542,7 @@ public abstract class ParentRunner<T> extends Runner implements Filterable,
     }
 
     private Comparator<? super T> comparator(final Sorter sorter) {
-        return new Comparator<T>() {
-            public int compare(T o1, T o2) {
-                return sorter.compare(describeChild(o1), describeChild(o2));
-            }
-        };
+        return (Comparator<T>) (o1, o2) -> sorter.compare(describeChild(o1), describeChild(o2));
     }
 
     /**

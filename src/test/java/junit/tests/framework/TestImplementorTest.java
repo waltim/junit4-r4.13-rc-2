@@ -22,11 +22,9 @@ public class TestImplementorTest extends TestCase {
 
         public void run(TestResult result) {
             result.startTest(this);
-            Protectable p = new Protectable() {
-                public void protect() throws Throwable {
-                    fTestCase.runBare();
-                    fTestCase.runBare();
-                }
+            Protectable p = () -> {
+                fTestCase.runBare();
+                fTestCase.runBare();
             };
             result.runProtected(this, p);
             result.endTest(this);

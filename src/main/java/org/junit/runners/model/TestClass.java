@@ -227,11 +227,7 @@ public class TestClass implements Annotatable {
             Class<? extends Annotation> annotationClass, Class<T> valueClass) {
         final List<T> results = new ArrayList<T>();
         collectAnnotatedFieldValues(test, annotationClass, valueClass,
-                new MemberValueConsumer<T>() {
-                    public void accept(FrameworkMember<?> member, T value) {
-                        results.add(value);
-                    }
-                });
+                (member, value) -> results.add(value));
         return results;
     }
 
@@ -261,11 +257,7 @@ public class TestClass implements Annotatable {
             Class<? extends Annotation> annotationClass, Class<T> valueClass) {
         final List<T> results = new ArrayList<T>();
         collectAnnotatedMethodValues(test, annotationClass, valueClass,
-                new MemberValueConsumer<T>() {
-                    public void accept(FrameworkMember<?> member, T value) {
-                        results.add(value);
-                    }
-                });
+                (member, value) -> results.add(value));
         return results;
     }
 

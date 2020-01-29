@@ -92,22 +92,18 @@ public class FailOnTimeoutTest {
     }
 
     private ThrowingRunnable evaluateWithException(final Exception exception) {
-        return new ThrowingRunnable() {
-            public void run() throws Throwable {
-                statement.nextException = exception;
-                statement.waitDuration = 0;
-                failOnTimeout.evaluate();
-            }
+        return () -> {
+            statement.nextException = exception;
+            statement.waitDuration = 0;
+            failOnTimeout.evaluate();
         };
     }
 
     private ThrowingRunnable evaluateWithWaitDuration(final long waitDuration) {
-        return new ThrowingRunnable() {
-            public void run() throws Throwable {
-                statement.nextException = null;
-                statement.waitDuration = waitDuration;
-                failOnTimeout.evaluate();
-            }
+        return () -> {
+            statement.nextException = null;
+            statement.waitDuration = waitDuration;
+            failOnTimeout.evaluate();
         };
     }
 

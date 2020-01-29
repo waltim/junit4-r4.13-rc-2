@@ -117,11 +117,7 @@ public class TestResult {
      */
     protected void run(final TestCase test) {
         startTest(test);
-        Protectable p = new Protectable() {
-            public void protect() throws Throwable {
-                test.runBare();
-            }
-        };
+        Protectable p = () -> test.runBare();
         runProtected(test, p);
 
         endTest(test);

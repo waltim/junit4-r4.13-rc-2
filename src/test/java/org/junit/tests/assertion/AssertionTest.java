@@ -989,17 +989,13 @@ public class AssertionTest {
     }
 
     private static ThrowingRunnable nonThrowingRunnable() {
-        return new ThrowingRunnable() {
-            public void run() throws Throwable {
-            }
+        return () -> {
         };
     }
 
     private static ThrowingRunnable throwingRunnable(final Throwable t) {
-        return new ThrowingRunnable() {
-            public void run() throws Throwable {
-                throw t;
-            }
+        return () -> {
+            throw t;
         };
     }
 }
